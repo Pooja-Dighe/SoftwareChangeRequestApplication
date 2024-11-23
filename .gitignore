@@ -2,7 +2,7 @@
 # user-specific files
 
 bin/
-obj/
+/obj/
 *.user
 *.suo
 *.csproj.user
