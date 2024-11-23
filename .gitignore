@@ -1,0 +1,51 @@
+# Ignore Visual Studio temporary files, build results, and
+# user-specific files
+
+bin/
+obj/
+*.user
+*.suo
+*.csproj.user
+*.rsuser
+*.sln.docstates
+.vs/
+
+# Ignore build outputs
+*.dll
+*.exe
+*.app
+*.dmg
+*.pkg
+*.so
+*.a
+*.out
+
+# Ignore dependency directories
+wwwroot/lib/
+
+# Ignore publish outputs
+*.publish.xml
+*.deploy.*
+
+# Ignore logs, databases, and debug-specific files
+*.log
+*.sql
+*.sqlite
+*.pdb
+*.mdb
+*.accdb
+
+# Ignore application secrets
+secrets.json
+
+# Ignore unnecessary configuration files
+appsettings.*.json
+launchSettings.json
+
+# Ignore IDE-specific directories and files
+.idea/
+*.iml
+
+# Ignore system files
+.DS_Store
+Thumbs.db
