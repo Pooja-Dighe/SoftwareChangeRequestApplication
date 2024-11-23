@@ -1,0 +1,88 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\2024\\SCRSApplication\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{54B736F1-0B9E-40D9-9239-EC70040A96AE}|SCRSApplication.csproj|d:\\2024\\scrsapplication\\areas\\identity\\pages\\account\\register.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{54B736F1-0B9E-40D9-9239-EC70040A96AE}|SCRSApplication.csproj|solutionrelative:areas\\identity\\pages\\account\\register.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{54B736F1-0B9E-40D9-9239-EC70040A96AE}|SCRSApplication.csproj|d:\\2024\\scrsapplication\\views\\approle\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{54B736F1-0B9E-40D9-9239-EC70040A96AE}|SCRSApplication.csproj|solutionrelative:views\\approle\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{54B736F1-0B9E-40D9-9239-EC70040A96AE}|SCRSApplication.csproj|d:\\2024\\scrsapplication\\scrsapplication.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{54B736F1-0B9E-40D9-9239-EC70040A96AE}|SCRSApplication.csproj|solutionrelative:scrsapplication.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{54B736F1-0B9E-40D9-9239-EC70040A96AE}|SCRSApplication.csproj|d:\\2024\\scrsapplication\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{54B736F1-0B9E-40D9-9239-EC70040A96AE}|SCRSApplication.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Register.cshtml",
+              "DocumentMoniker": "D:\\2024\\SCRSApplication\\Areas\\Identity\\Pages\\Account\\Register.cshtml",
+              "RelativeDocumentMoniker": "Areas\\Identity\\Pages\\Account\\Register.cshtml",
+              "ToolTip": "D:\\2024\\SCRSApplication\\Areas\\Identity\\Pages\\Account\\Register.cshtml",
+              "RelativeToolTip": "Areas\\Identity\\Pages\\Account\\Register.cshtml",
+              "ViewState": "AgIAAAsAAAAAAAAAAAAAACQAAAAOAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-11-22T14:14:54.45Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Create.cshtml",
+              "DocumentMoniker": "D:\\2024\\SCRSApplication\\Views\\AppRole\\Create.cshtml",
+              "RelativeDocumentMoniker": "Views\\AppRole\\Create.cshtml",
+              "ToolTip": "D:\\2024\\SCRSApplication\\Views\\AppRole\\Create.cshtml",
+              "RelativeToolTip": "Views\\AppRole\\Create.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAyAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-11-19T10:07:49.066Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\2024\\SCRSApplication\\Program.cs",
+              "RelativeDocumentMoniker": "Program.cs",
+              "ToolTip": "D:\\2024\\SCRSApplication\\Program.cs",
+              "RelativeToolTip": "Program.cs",
+              "ViewState": "AgIAAAcAAAAAAAAAAAAowA4AAAA2AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-19T10:01:25.502Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "SCRSApplication",
+              "DocumentMoniker": "D:\\2024\\SCRSApplication\\SCRSApplication.csproj",
+              "RelativeDocumentMoniker": "SCRSApplication.csproj",
+              "ToolTip": "D:\\2024\\SCRSApplication\\SCRSApplication.csproj",
+              "RelativeToolTip": "SCRSApplication.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2024-11-19T09:36:56.756Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
