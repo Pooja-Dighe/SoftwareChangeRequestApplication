@@ -1,0 +1,98 @@
+﻿@model SCRSApplication.Models.RaiseRequestEntity;
+@* @model SCRSApplication.Models.UserViewModel; *@
+    
+@{
+    var roles = ViewData["Roles"] as IList<string>;
+    ViewData["Title"] = "Create Request";
+    var roleId = ViewData["RoleId"];
+    var userId = ViewData["UserId"];
+    var roleName = ViewData["Role"];
+    var user = ViewData["User"];
+}
+
+@if (roles.Contains("User"))
+{
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="Create" method="post" autocomplete="off">
+                <h2>Create Request</h2>
+                <hr/>
+                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"> </div>
+                <div class="form-floating mb-3">
+                    <input asp-for="Title" class="form-control" autocomplete="off" />
+                    <label asp-for="Title" class="form-label">Title</label>
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+                <div class="form-floating mb-3">
+                    <input asp-for="Description" class="form-control" autocomplete="off" />
+                    <label asp-for="Description" class="form-label">Description</label>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+                <div class="form-floating mb-3">
+                    @*    <label asp-for="Priority" class="control-label">Priority</label><br /> *@
+                    <select id="dropdown" name="Priority" asp-for="Priority" class="form-control" autocomplete="off">
+                        <option disabled.selected>Select</option>
+                        <option value="Low1">Low</option>
+                        <option value="Medium2">Medium</option>
+                        <option value="High3">High</option>
+                    </select>
+                </div>
+                <div class="form-floating mb-3">
+                    <input asp-for="DueDate" class="form-control" type="date" autocomplete="off" />
+                    <label asp-for="DueDate" class="form-label">Due Date</label>
+                    <span asp-validation-for="DueDate" class="text-danger"></span>
+                </div>
+                <div class="form-floating mb-3">
+                    <input asp-for="Project" class="form-control" autocomplete="off" />
+                    <label asp-for="Project" class="form-label">Project</label>
+                    <span asp-validation-for="Project" class="text-danger"></span>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="hidden" asp-for="UserId" class="form-control" name="UserId" style="display: none;" value="@userId" readonly />
+                    <label asp-for="UserId" class="form-label" style="display: none;">UserId</label>
+                    <span asp-validation-for="UserId" type="hidden" class="text-danger"></span>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="hidden" asp-for="RoleId" class="form-control" name="RoleId"  value="@roleId" readonly />
+                    <label  asp-for="RoleId" class="form-label" style="display: none;">RoleId</label>
+                    <span asp-validation-for="RoleId" type="hidden" class="text-danger"></span>
+                </div>
+
+                @*    <div class="form-floating mb-3">
+                <input asp-for="User" class="form-control" name="User" value="@user" />
+                <label asp-for="User" class="form-label">User</label>
+                <span asp-validation-for="User" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <input type="text" asp-for="Role" class="form-control" name="Role" value="@roleName" readonly />
+                <label asp-for="Role" class="form-label">Role</label>
+                <span asp-validation-for="Role" class="text-danger"></span>
+            </div> *@
+
+
+
+
+                <button type="submit" class="w-100 btn btn-lg btn-primary">Raise Request</button>
+            </form>
+        </div>
+    </div>
+}
+
+
+@if (roles.Contains("Manager"))
+{
+
+
+}
+
+
+@if (roles.Contains("Developer"))
+{
+
+
+
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" /> <!-- Enables client-side validation -->
+}

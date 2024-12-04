@@ -15,7 +15,31 @@ builder.Services.AddDefaultIdentity<IdentityUser>().AddDefaultTokenProviders().A
 builder.Services.AddControllersWithViews(); // For MVC
 builder.Services.AddRazorPages(); // For Razor Pages
 
+
 var app = builder.Build();
+
+var scope = app.Services.CreateScope();                        // use to define or seed the role at application startup
+var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+var roles = new[] { "Manager", "Developer", "User" };
+
+foreach (var role in roles)
+{
+    if (!await roleManager.RoleExistsAsync(role))
+    {
+        await roleManager.CreateAsync(new IdentityRole(role));
+    }
+}
+
+var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+var adminUser = await userManager.FindByEmailAsync("Sam@outlook.com");
+
+if (adminUser != null && !await userManager.IsInRoleAsync(adminUser, "Manager"))
+{
+    await userManager.AddToRoleAsync(adminUser, "Manager");
+}
+
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
