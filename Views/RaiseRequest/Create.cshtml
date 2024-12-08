@@ -2,12 +2,12 @@
 @* @model SCRSApplication.Models.UserViewModel; *@
     
 @{
-    var roles = ViewData["Roles"] as IList<string>;
-    ViewData["Title"] = "Create Request";
-    var roleId = ViewData["RoleId"];
-    var userId = ViewData["UserId"];
-    var roleName = ViewData["Role"];
-    var user = ViewData["User"];
+    // var roles = ViewData["Roles"] as IList<string>;
+    ViewData["Title"] = "Create New Request";
+    var roles = ViewBag.RoleName;
+    var roleId = ViewBag.RoleId;
+    var userId = ViewBag.UserId;
+    var user = ViewBag.UserName;
 }
 
 @if (roles.Contains("User"))
@@ -15,8 +15,8 @@
     <div class="row">
         <div class="col-md-4">
             <form asp-action="Create" method="post" autocomplete="off">
-                <h2>Create Request</h2>
-                <hr/>
+                <h2>Create New Request</h2>
+                <hr/>             
                 <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"> </div>
                 <div class="form-floating mb-3">
                     <input asp-for="Title" class="form-control" autocomplete="off" />
@@ -31,10 +31,10 @@
                 <div class="form-floating mb-3">
                     @*    <label asp-for="Priority" class="control-label">Priority</label><br /> *@
                     <select id="dropdown" name="Priority" asp-for="Priority" class="form-control" autocomplete="off">
-                        <option disabled.selected>Select</option>
-                        <option value="Low1">Low</option>
-                        <option value="Medium2">Medium</option>
-                        <option value="High3">High</option>
+                        <option disabled.selected>Select Priority</option>
+                        <option value="Low">Low</option>
+                        <option value="Medium">Medium</option>
+                        <option value="High">High</option>
                     </select>
                 </div>
                 <div class="form-floating mb-3">

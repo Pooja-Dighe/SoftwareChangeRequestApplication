@@ -1,0 +1,89 @@
+﻿@model SCRSApplication.Models.RaiseRequestEntity;
+
+
+@{
+    ViewData["Title"] = "Edit";
+    var roles = ViewBag.RoleName;
+    var roleId = ViewBag.RoleId;
+    var userId = ViewBag.UserId;
+    var user = ViewBag.UserName;
+}
+
+
+@if (roles.Contains("User"))
+{
+    <h2>Change your Request</h2>
+
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="Edit" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+                <input type="hidden" asp-for="Id" />
+                <div class="form-floating mb-3">
+                    <input asp-for="Title" autocomplete="off" class="form-control" />
+                    <label asp-for="Title" class="form-label">Title</label>
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+                <div class="form-floating mb-3">
+                    <input asp-for="Description" autocomplete="off" class="form-control" />
+                    <label asp-for="Description" class="form-label">Description</label>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+                <div class="form-floating mb-3">
+                    <select id="dropdown" name="Priority" asp-for="Priority" class="form-control" autocomplete="off">
+                        <option disabled.selected>Select Priority</option>
+                        <option value="Low">Low</option>
+                        <option value="Medium">Medium</option>
+                        <option value="High">High</option>
+                    </select>
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+                <div class="form-floating mb-3">
+                    <input asp-for="DueDate" autocomplete="off" class="form-control" type="date" />
+                    <label asp-for="DueDate" class="form-label">Due Date</label>
+                    <span asp-validation-for="DueDate" class="text-danger"></span>
+                </div>
+                <div class="form-floating mb-3">
+                    <input asp-for="Project" class="form-control" autocomplete="off" />
+                    <label asp-for="Project" class="form-label">Project</label>
+                    <span asp-validation-for="Project" class="text-danger"></span>
+                </div>
+
+                  <div class="form-floating mb-3">
+                <input type="hidden" asp-for="UserId" class="form-control" name="UserId" style="display: none;" value="@userId" readonly />
+                <label asp-for="UserId" class="form-label" style="display: none;">UserId</label>
+                <span asp-validation-for="UserId" type="hidden" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <input type="hidden" asp-for="RoleId" class="form-control" name="RoleId" value="@roleId" readonly />
+                <label asp-for="RoleId" class="form-label" style="display: none;">RoleId</label>
+                <span asp-validation-for="RoleId" type="hidden" class="text-danger"></span>
+            </div>
+                <br />
+                <button type="submit" class="w-100 btn btn-lg btn-primary">Modify Request</button>
+            </form>
+        </div>
+    </div>
+}
+
+
+@if (roles.Contains("Manager"))
+{
+
+
+}
+
+
+@if (roles.Contains("Developer"))
+{
+
+
+    @* <p>User ID: @ViewBag.UserId</p>
+    <p>User Name: @ViewBag.UserName</p>
+    <p>Role ID: @ViewBag.RoleId</p>
+    <p>Role Name: @ViewBag.RoleName</p> *@
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" /> <!-- Enables client-side validation -->
+}

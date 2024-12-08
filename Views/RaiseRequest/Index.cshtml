@@ -5,7 +5,7 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Raise Your Request</h1>
+<h1>Your Raised Request</h1>
 
 <p>
     <a asp-action="Create">Raise New Request</a>
@@ -28,7 +28,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.Project)
             </th>
-            <th>
+          @*   <th>
                 @Html.DisplayNameFor(model => model.RequestStatus)
             </th>
             <th>
@@ -42,7 +42,7 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Comments)
-            </th>
+            </th> *@
             <th></th>
         </tr>
     </thead>
@@ -64,7 +64,7 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Project)
             </td>
-            <td>
+           @*  <td>
                 @Html.DisplayFor(modelItem => item.RequestStatus)
             </td>
             <td>
@@ -78,13 +78,40 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Comments)
-            </td>
+            </td> *@
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
+                    <form asp-action="Edit" method="get">
+                        <input type="hidden" name="id" value="@item.Id" />
+                        <button type="submit" class="btn btn-primary">Edit</button>
+                    </form>
+             </td>
+             <td>
+                    <form asp-action="Details" method="get">
+                        <input type="hidden" name="id" value="@item.Id" />
+                        <button type="submit" class="btn btn-info">View</button>
+                    </form>  
+             </td>
+             <td>
+                    <form asp-action="Delete" method="get">
+                        <input type="hidden" name="id" value="@item.Id" />
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                  @*   <button type="submit" class="btn btn-danger"  asp-action="Delete" asp-route-id="@item.Id">Delete</button> *@
+             </td>
         </tr>
 }
     </tbody>
 </table>
+
+
+@* @if (roles.Contains("Manager"))
+{
+
+
+}
+
+
+@if (roles.Contains("Developer"))
+{
+}
+ *@

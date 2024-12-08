@@ -4,6 +4,7 @@ namespace SCRSApplication.Models
 {
     public class UserViewModel 
     {
+        public int Id { get; set; }
         [Required]
         [Display(Name = "Title")]
         public string Title { get; set; }

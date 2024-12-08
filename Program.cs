@@ -12,6 +12,10 @@ builder.Services.AddDbContext<ApplicationDBContext>(Options => Options.UseSqlSer
 builder.Services.AddDefaultIdentity<IdentityUser>().AddDefaultTokenProviders().AddRoles<IdentityRole>().
     AddEntityFrameworkStores<ApplicationDBContext>();
 
+//builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+//    .AddEntityFrameworkStores<ApplicationDBContext>()
+//    .AddDefaultTokenProviders();
+
 builder.Services.AddControllersWithViews(); // For MVC
 builder.Services.AddRazorPages(); // For Razor Pages
 
