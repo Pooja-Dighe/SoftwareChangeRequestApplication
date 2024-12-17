@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SCRSApplication.Data;
 
@@ -11,9 +12,11 @@ using SCRSApplication.Data;
 namespace SCRSApplication.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20241211102914_Project&TeamsTablesAdded")]
+    partial class ProjectTeamsTablesAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -245,12 +248,12 @@ namespace SCRSApplication.Migrations
                     b.Property<string>("ProjectName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserId")
+                    b.Property<string>("RoleId")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("RoleId");
 
                     b.ToTable("ProjectEntity", "Identity");
                 });
@@ -319,7 +322,10 @@ namespace SCRSApplication.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("ProjectId")
+                    b.Property<string>("ProjectId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProjectId1")
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")
@@ -327,7 +333,7 @@ namespace SCRSApplication.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProjectId");
+                    b.HasIndex("ProjectId1");
 
                     b.HasIndex("UserId");
 
@@ -400,11 +406,11 @@ namespace SCRSApplication.Migrations
 
             modelBuilder.Entity("SCRSApplication.Models.ProjectEntity", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", "Role")
                         .WithMany()
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("RoleId");
 
-                    b.Navigation("User");
+                    b.Navigation("Role");
                 });
 
             modelBuilder.Entity("SCRSApplication.Models.RaiseRequestEntity", b =>
@@ -426,7 +432,9 @@ namespace SCRSApplication.Migrations
                 {
                     b.HasOne("SCRSApplication.Models.ProjectEntity", "Project")
                         .WithMany()
-                        .HasForeignKey("ProjectId");
+                        .HasForeignKey("ProjectId1")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("SCRSApplication.Models.ApplicationUser", "User")
                         .WithMany()

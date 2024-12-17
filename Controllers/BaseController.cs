@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace SCRSApplication.Controllers
 {
@@ -42,25 +43,15 @@ namespace SCRSApplication.Controllers
             return (null, null, null, null);
         }
 
-        //protected async Task InitializeUserAsync()
-        //{
-        //    if (User.Identity.IsAuthenticated)
-        //    {
-        //        UserId = _userManager.GetUserId(User); // Get User ID 
-        //        var roles = await _userManager.GetRolesAsync(await _userManager.GetUserAsync(User));
-        //        if (roles.Any())
-        //        {
-        //            var roleName = roles.First();
-        //            var role = await _roleManager.FindByNameAsync(roleName);
-        //            RoleId = role?.Id;
-        //        }
-        //    }
-        //}
 
-        //public override void OnActionExecuting(Microsoft.AspNetCore.Mvc.Filters.ActionExecutingContext context)
-        //{
-        //    base.OnActionExecuting(context);
-        //    Task.Run(InitializeUserAsync).Wait();
-        //}
+        protected List<SelectListItem> GetPriorityDropdownValues()
+        {
+            return new List<SelectListItem>
+            {
+              new SelectListItem { Text = "Low", Value = "1" },
+              new SelectListItem { Text = "Medium", Value = "2" },
+              new SelectListItem { Text = "High", Value = "3" }
+            };
+        }
     }
 }

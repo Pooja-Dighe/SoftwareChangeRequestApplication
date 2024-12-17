@@ -1,0 +1,41 @@
+﻿@model IEnumerable<SCRSApplication.Models.ProjectViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+  
+}
+
+<h2>List of Users with Project</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>
+               Project Name
+            </th>
+            <th>
+               User
+            </th>
+           <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.ProjectName</td>
+                <td>@item.User</td>
+            
+        
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>

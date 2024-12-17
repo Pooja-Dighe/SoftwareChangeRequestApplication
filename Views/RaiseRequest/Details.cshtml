@@ -1,14 +1,114 @@
-﻿@model SCRSApplication.Models.RaiseRequestEntity
+﻿@model SCRSApplication.Models.RaiseRequestViewModel
 
 @{
+   
     ViewData["Title"] = "Details";
+    var roles = ViewBag.RoleName;
+    var roleId = ViewBag.RoleId;
+    var userId = ViewBag.UserId;
+    var user = ViewBag.UserName;
+    var priority = ViewBag.SelectedText;
 }
 
+@if (roles.Contains("User"))
+{
+   
 <h2>View Request Details</h2>
 
 <div>
     @* <h4>RaiseRequestEntity</h4> *@
     <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+        <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Priority)
+        </dt>
+        <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Priority)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.DueDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.DueDate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Project)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Project)
+        </dd>
+       @*  <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.RequestStatus)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.RequestStatus)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.WorkStatus)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.WorkStatus)
+        </dd> 
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.User)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.User.Id)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Role)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Role.Id)
+        </dd> *@
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Comments)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Comments)
+        </dd>
+    </dl>
+</div>
+<div>
+
+ <br />
+      <form method="get">
+        <div class="row">
+            <div class="col-md-1">
+                <input type="hidden" name="id" value="@Model?.Id" />
+                <button type="submit" asp-action="Edit" class="btn btn-primary">Edit</button>
+                </div>
+            <div class="col-md-1">
+                <input type="hidden" name="id" />
+                    <button type="submit" asp-action="Index" class="btn btn-outline-secondary">Back</button>
+            </div>
+        </div>
+      </form>
+     
+ </div>
+
+}
+
+@if (roles.Contains("Manager"))
+{
+    <h2>View Users Request Details</h2>
+
+<div>
+    @* <h4>RaiseRequestEntity</h4> *@
+    <hr />
+   
     <dl class="row">
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Title)
@@ -40,7 +140,7 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Project)
         </dd>
-        <dt class="col-sm-2">
+      @*   <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.RequestStatus)
         </dt>
         <dd class="col-sm-10">
@@ -63,7 +163,7 @@
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Role.Id)
-        </dd>
+        </dd> *@
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Comments)
         </dt>
@@ -72,22 +172,26 @@
         </dd>
     </dl>
 </div>
-<div>
-  @*   <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a> *@
- <br />
-      <form method="get">
-        <div class="row">
-            <div class="col-md-1">
-                <input type="hidden" name="id" value="@Model?.Id" />
-                <button type="submit" asp-action="Edit" class="btn btn-info">Edit</button>
-                </div>
-            <div class="col-md-1">
-                <input type="hidden" name="id" />
-                <button type="submit" asp-action="Index" class="btn btn-primary">Back</button>
-            </div>
-        </div>
-      </form>
-     
- </div>
 
+        <div>
+     
+            <br />
+            <form method="get">
+                <div class="row">
+                    <div class="col-md-1">
+                        <input type="hidden" name="id" value="@Model?.Id" />
+                        <button type="submit" asp-action="Edit" class="btn btn-primary">Edit</button>
+                    </div>
+                    <div class="col-md-1">
+                        <input type="hidden" name="id" />
+                    <button type="submit" asp-action="Index" class="btn btn-outline-secondary">Back</button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+}
+
+@if (roles.Contains("Developer"))
+{
+}

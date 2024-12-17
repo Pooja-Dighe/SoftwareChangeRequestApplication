@@ -1,28 +1,31 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System.ComponentModel.DataAnnotations;
 
 namespace SCRSApplication.Models
 {
-    public class UserViewModel 
+    public class RaiseRequestViewModel 
     {
         public int Id { get; set; }
         [Required]
         [Display(Name = "Title")]
-        public string Title { get; set; }
+        public string? Title { get; set; }
 
 
         [Required]
         [Display(Name = "Description")]
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         [Required]
         [Display(Name = "Priority")]
-        public string? Priority { get; set; }
+        public string? PriorityValue { get; set; }  //value
+        public string? Priority { get; set; }     //text
+        public IEnumerable<SelectListItem> PriorityList { get; set; } = new List<SelectListItem>();
 
 
         [Required]
         [Display(Name = "Due Date")]
-        public DateOnly DueDate { get; set; }
-
+        public DateTime DueDate { get; set; }
+     
         [Required]
         [Display(Name = "Project")]
         public string? Project { get; set; }
@@ -35,6 +38,8 @@ namespace SCRSApplication.Models
         [Display(Name = "RoleId")]
         public string? RoleId { get; set; }
 
-
+        public string? Comments { get; set; }
+        public DateTime AddedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
     }
 }

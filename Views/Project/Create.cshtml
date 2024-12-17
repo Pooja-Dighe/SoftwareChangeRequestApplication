@@ -1,0 +1,45 @@
+﻿@model SCRSApplication.Models.ProjectViewModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h2>Create Project for User</h2>
+
+@* <h4>ProjectEntity</h4>
+ *@<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="ProjectName" class="control-label">Project Name</label>
+                <input asp-for="ProjectName" class="form-control" />
+                <span asp-validation-for="ProjectName" class="text-danger"></span>
+            </div>
+            <br />
+            <div class="form-group">
+                <label asp-for="UserId" class="control-label">User</label>
+                <select asp-for="UserId" asp-items="ViewBag.UserId" class="form-control">
+                    <option value="">-- Select User --</option>
+                </select>
+            </div>
+            <br />
+            <div class="form-group">
+                <input type="submit" value="Create" class="w-100 btn btn-lg btn-primary" />
+            </div>
+            <br />
+            <div class="form-group">
+                <input type="submit" value="Back" asp-action="Index" class="btn btn-light" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@* <div>
+    <a asp-action="Index">Back to List</a>
+</div> *@
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -51,5 +51,8 @@ namespace SCRSApplication.Data
         public DbSet<ApplicationUser> ApplicationUser { get; set; }  //table name
 
         public DbSet<RaiseRequestEntity> RaiseRequestEntity { get; set; }
+
+        public DbSet<ProjectEntity> ProjectEntity { get; set; }
+        public DbSet<TeamsEntity> TeamEntity { get; set; }
     }
 }
