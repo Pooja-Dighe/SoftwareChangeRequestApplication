@@ -27,8 +27,10 @@ namespace SCRSApplication.Models
         public DateTime DueDate { get; set; }
      
         [Required]
-        [Display(Name = "Project")]
-        public string? Project { get; set; }
+        [Display(Name = "Project Name")]
+        public int ProjectId { get; set; }  //value
+        public string? ProjectName { get; set; }     //text
+
 
         [Required]
         [Display(Name = "UserId")]
@@ -41,5 +43,7 @@ namespace SCRSApplication.Models
         public string? Comments { get; set; }
         public DateTime AddedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
+        [Timestamp]
+        public byte[]? RowVersion { get; set; } // Add RowVersion property
     }
 }

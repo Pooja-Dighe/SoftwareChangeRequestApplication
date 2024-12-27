@@ -7,6 +7,7 @@
     var roleId = ViewBag.RoleId;
     var userId = ViewBag.UserId;
     var user = ViewBag.UserName;
+
 }
 
 @if (roles.Contains("User"))
@@ -28,21 +29,26 @@
                     <span asp-validation-for="Description" class="text-danger"></span>
                 </div>
                 <div class="form-floating mb-3">
-                    <select id="dropdown" name="Priority" asp-for="Priority" asp-items="ViewBag.PriorityList" class="form-control" autocomplete="off">
-                        <option value="">-- Select Priority --</option>
+                    <select id="dropdown" name="PriorityValue" asp-for="Priority" asp-items="@ViewBag.PriorityList" class="form-control" autocomplete="off">
+                        <option value="PriorityValue">-- Select Priority --</option>
                     </select>
                     <span asp-validation-for="Priority" class="text-danger"></span>
                 </div>
         
                 <div class="form-floating mb-3">
-                    <input asp-for="DueDate" class="form-control" type="date" autocomplete="off" />
+                    <input asp-for="DueDate" class="form-control" type="date" autocomplete="off" min="@DateTime.Now.ToString("yyyy-MM-dd")" />
                     <label asp-for="DueDate" class="form-label">Due Date</label>
                     <span asp-validation-for="DueDate" class="text-danger"></span>
                 </div>
+                <div class="form-floating mb-3">                     
+                    <input type="text" asp-for="ProjectName" class="form-control" id="ProjectName" name="ProjectName" value="@ViewBag.ProjectName" autocomplete="off" readonly />
+                    <label asp-for="ProjectName" class="form-label">Project Name</label> <br />
+                   <span asp-validation-for="ProjectName" class="text-danger"></span>
+                </div>
                 <div class="form-floating mb-3">
-                    <input asp-for="Project" class="form-control" autocomplete="off" />
-                    <label asp-for="Project" class="form-label">Project</label>
-                    <span asp-validation-for="Project" class="text-danger"></span>
+                    <input type="hidden"  asp-for="ProjectId" class="form-control" id="ProjectId" name="ProjectId" value="@ViewBag.ProjectId" autocomplete="off" readonly />
+                    <label asp-for="ProjectId" class="form-label" style="display: none;">ProjectId</label>
+                    <span asp-validation-for="ProjectId" class="text-danger"></span>
                 </div>
                 <div class="form-floating mb-3">
                     <input type="hidden" asp-for="UserId" class="form-control" name="UserId" style="display: none;" value="@userId" readonly />
@@ -54,6 +60,8 @@
                     <label  asp-for="RoleId" class="form-label" style="display: none;">RoleId</label>
                     <span asp-validation-for="RoleId" type="hidden" class="text-danger"></span>
                 </div>
+                  
+
 
                 @*    <div class="form-floating mb-3">
                 <input asp-for="User" class="form-control" name="User" value="@user" />
@@ -65,8 +73,6 @@
                 <label asp-for="Role" class="form-label">Role</label>
                 <span asp-validation-for="Role" class="text-danger"></span>
             </div> *@
-
-
 
 
                 <button type="submit" class="w-100 btn btn-lg btn-primary">Raise Request</button>

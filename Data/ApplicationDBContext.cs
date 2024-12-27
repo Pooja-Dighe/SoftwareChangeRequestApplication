@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using SCRSApplication.Models;
 using System.Reflection.Emit;
+using System.Xml;
 
 namespace SCRSApplication.Data
 {
@@ -44,7 +45,11 @@ namespace SCRSApplication.Data
             {
                 entity.ToTable("UserTokens");
             });
-
+            builder.Entity<RaiseRequestEntity>()
+                    .Property(e => e.RowVersion)
+                    .HasColumnType("rowversion")
+                    .ValueGeneratedOnAddOrUpdate()
+                    .IsConcurrencyToken();
         }
 
 

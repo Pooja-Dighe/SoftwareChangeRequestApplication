@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using SCRSApplication.Data;
 using Microsoft.AspNetCore.Identity;
+using SCRSApplication.Services;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,13 +11,14 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<ApplicationDBContext>(Options => Options.UseSqlServer(builder.Configuration.GetConnectionString("DBConnection")));
 
-builder.Services.AddDefaultIdentity<IdentityUser>().AddDefaultTokenProviders().AddRoles<IdentityRole>().
-    AddEntityFrameworkStores<ApplicationDBContext>();
+//builder.Services.AddDefaultIdentity<IdentityUser>().AddDefaultTokenProviders().AddRoles<IdentityRole>().
+//    AddEntityFrameworkStores<ApplicationDBContext>();
 
-//builder.Services.AddIdentity<IdentityUser, IdentityRole>()
-//    .AddEntityFrameworkStores<ApplicationDBContext>()
-//    .AddDefaultTokenProviders();
+builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+    .AddEntityFrameworkStores<ApplicationDBContext>()
+    .AddDefaultTokenProviders();
 
+builder.Services.AddTransient<IEmailSender, EmailSender>();
 builder.Services.AddControllersWithViews(); // For MVC
 builder.Services.AddRazorPages(); // For Razor Pages
 
@@ -35,13 +38,13 @@ foreach (var role in roles)
     }
 }
 
-var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
-var adminUser = await userManager.FindByEmailAsync("Sam@outlook.com");
+//var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+//var adminUser = await userManager.FindByEmailAsync("Sam@outlook.com");
 
-if (adminUser != null && !await userManager.IsInRoleAsync(adminUser, "Manager"))
-{
-    await userManager.AddToRoleAsync(adminUser, "Manager");
-}
+//if (adminUser != null && !await userManager.IsInRoleAsync(adminUser, "Manager"))
+//{
+//    await userManager.AddToRoleAsync(adminUser, "Manager");
+//}
 
 
 

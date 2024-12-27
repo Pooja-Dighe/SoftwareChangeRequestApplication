@@ -1,8 +1,8 @@
-﻿@model IEnumerable<SCRSApplication.Models.RaiseRequestEntity>
+﻿@model IEnumerable<SCRSApplication.Models.RaiseRequestViewModel>
 
 
 @{
-    
+
     ViewData["Title"] = "Index";
     var roles = ViewBag.RoleName;
     var roleId = ViewBag.RoleId;
@@ -14,11 +14,28 @@
 @if (roles.Contains("User"))
 {
 
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
 
 <h1>Your Raised Request List</h1>
 
-<p>
-    <a asp-action="Create">Raise New Request</a>
+<p>    
+         <a asp-action="Create">Raise New Request</a>
+         
 </p>
 <table class="table table-bordered">
     <thead>
@@ -29,14 +46,14 @@
             <th>
                 @Html.DisplayNameFor(model => model.Description)
             </th>
-          @*   <th>
+            <th>
                 @Html.DisplayNameFor(model => model.Priority)
-            </th> *@
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.DueDate)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Project)
+                @Html.DisplayNameFor(model => model.ProjectName)
             </th>
           @*   <th>
                 @Html.DisplayNameFor(model => model.RequestStatus)
@@ -65,14 +82,15 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Description)
             </td>
-           @*  <td>
+                  
+            <td>                
                 @Html.DisplayFor(modelItem => item.Priority)
-            </td> *@
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.DueDate)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Project)
+                @Html.DisplayFor(modelItem => item.ProjectName)
             </td>
            @*  <td>
                 @Html.DisplayFor(modelItem => item.RequestStatus)
@@ -113,6 +131,7 @@
     </tbody>
 </table>
 
+          
 
 }
 
@@ -138,7 +157,7 @@
                     @Html.DisplayNameFor(model => model.DueDate)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Project)
+                    @Html.DisplayNameFor(model => model.ProjectName)
                 </th>
                 @*   <th>
             @Html.DisplayNameFor(model => model.RequestStatus)
@@ -175,7 +194,7 @@
                         @Html.DisplayFor(modelItem => item.DueDate)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Project)
+                        @Html.DisplayFor(modelItem => item.ProjectName)
                     </td>
                     @*  <td>
             @Html.DisplayFor(modelItem => item.RequestStatus)

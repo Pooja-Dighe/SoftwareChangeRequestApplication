@@ -26,22 +26,32 @@ namespace SCRSApplication.Controllers
         // GET: RaiseRequest
         public async Task<IActionResult> Index()
         {
-            var applicationDBContext = _context.RaiseRequestEntity.Include(r => r.Role).Include(r => r.User);
             var userDetails = await GetUserDetailsAsync();
 
             ViewBag.UserId = userDetails.UserId;
             ViewBag.UserName = userDetails.UserName;
             ViewBag.RoleId = userDetails.RoleId;
             ViewBag.RoleName = userDetails.RoleName;
+            var userId = userDetails.UserId;
 
+            var entities = await _context.RaiseRequestEntity
+                          .Where(e => e.UserId == userId)                         
+                          .Include(e => e.Project)
+                          .ToListAsync();
+          
             var PriorityValues = GetPriorityDropdownValues();
-            RaiseRequestEntity raiseRequestEntity = new RaiseRequestEntity();
-
-            foreach (var entity in applicationDBContext)
+       
+            var viewModel = entities.Select(e => new RaiseRequestViewModel
             {
-                entity.Priority = PriorityValues.FirstOrDefault(d => d.Value == raiseRequestEntity.Priority)?.Text;
-            }
-            return View(await applicationDBContext.ToListAsync());
+                Id = e.Id,
+                Title = e.Title,
+                Description = e.Description,
+                DueDate = e.DueDate,             
+                Priority = PriorityValues.FirstOrDefault(d => d.Value == e.Priority)?.Text,
+                ProjectName = e.Project.ProjectName, // Assuming MyProjectEntity has Name
+            }).ToList();
+
+            return View(viewModel);
         }
 
         public async Task<IActionResult> Create()
@@ -52,7 +62,15 @@ namespace SCRSApplication.Controllers
             ViewBag.UserName = userDetails.UserName;
             ViewBag.RoleId = userDetails.RoleId;
             ViewBag.RoleName = userDetails.RoleName;
-  
+
+            string uid = userDetails.UserId;
+            var project = _context.ProjectEntity
+                                 .FirstOrDefault(p => _context.Users
+                                 .Any(u => u.Id == uid && p.UserId == u.Id));
+
+            ViewBag.ProjectName = project?.ProjectName ?? "No Project Found";
+            ViewBag.ProjectId = project?.Id;
+
             ViewBag.PriorityList = GetPriorityDropdownValues();
             return View();
         }
@@ -72,7 +90,7 @@ namespace SCRSApplication.Controllers
                     Description = userViewModel.Description,
                     Priority = userViewModel.PriorityValue,
                     DueDate = userViewModel.DueDate,
-                    Project = userViewModel.Project,
+                    ProjectId = userViewModel.ProjectId,
                     RoleId = userViewModel.RoleId,
                     UserId = userViewModel.UserId,
                     AddedAt = DateTime.Now,
@@ -80,7 +98,12 @@ namespace SCRSApplication.Controllers
 
                   _context.RaiseRequestEntity.Add(raiseRequestEntity);
                   _context.SaveChanges();
+                  TempData["SuccessMessage"] = "Record saved successfully!";
                   return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "An error occurred while adding record or record is invalid";
             }
             ViewBag.PriorityList = GetPriorityDropdownValues();
             return View(userViewModel);
@@ -95,6 +118,15 @@ namespace SCRSApplication.Controllers
             ViewBag.UserName = userDetails.UserName;
             ViewBag.RoleId = userDetails.RoleId;
             ViewBag.RoleName = userDetails.RoleName;
+
+            string uid = userDetails.UserId;
+            var project = _context.ProjectEntity
+                                 .FirstOrDefault(p => _context.Users
+                                 .Any(u => u.Id == uid && p.UserId == u.Id));
+
+            ViewBag.ProjectName = project?.ProjectName ?? "No Project Found";
+            ViewBag.ProjectId = project?.Id;
+
             var raiseRequestEntity = _context.RaiseRequestEntity.FirstOrDefault(r => r.Id == id);
             if (raiseRequestEntity == null)
             {
@@ -108,10 +140,10 @@ namespace SCRSApplication.Controllers
                 Description = raiseRequestEntity.Description,
                 PriorityValue = raiseRequestEntity.Priority,
                 DueDate = raiseRequestEntity.DueDate,
-                Project = raiseRequestEntity.Project,
+                ProjectId = raiseRequestEntity.ProjectId,
                 RoleId = raiseRequestEntity.RoleId,
-                UserId = raiseRequestEntity.UserId,
-                UpdatedAt = DateTime.Now,
+                UserId = raiseRequestEntity.UserId,               
+                RowVersion = raiseRequestEntity.RowVersion
             };
 
             userViewModel.PriorityList = GetPriorityDropdownValues();
@@ -138,14 +170,17 @@ namespace SCRSApplication.Controllers
                         Description = userViewModel.Description,
                         Priority = userViewModel.PriorityValue,
                         DueDate = userViewModel.DueDate,
-                        Project = userViewModel.Project,
+                        ProjectId = userViewModel.ProjectId,
                         RoleId = userViewModel.RoleId,
                         UserId = userViewModel.UserId,
-                        UpdatedAt = userViewModel.UpdatedAt
+                        //RowVersion = userViewModel.RowVersion,
+                        UpdatedAt = DateTime.Now
                     };
 
+                    _context.Entry(raiseRequestEntity).OriginalValues["RowVersion"] = userViewModel.RowVersion;
                     _context.RaiseRequestEntity.Update(raiseRequestEntity);
                     _context.SaveChanges();
+                    TempData["SuccessMessage"] = "Record updated successfully!";
                     ViewBag.PriorityList = GetPriorityDropdownValues();
                     return RedirectToAction(nameof(Index));
                 }
@@ -155,6 +190,11 @@ namespace SCRSApplication.Controllers
                     {
                         return NotFound(); // Handle cases where the record was deleted
                     }
+
+                    TempData["ErrorMessage"] = "An error occurred while updating the record.";
+
+                    ModelState.AddModelError("", "Concurrency conflict occurred.");
+                   
                     throw; // Re-throw the exception if it's not concurrency related
 
                 }
@@ -175,12 +215,14 @@ namespace SCRSApplication.Controllers
             {
                 return NotFound();
             }
+
             var raiseRequestEntity = await _context.RaiseRequestEntity
                 .Include(r => r.Role)
-                .Include(r => r.User)
+                .Include(r => r.User)    
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             var PriorityValues = GetPriorityDropdownValues();
+            ViewBag.Priorities = GetPriorityDropdownValues();
 
             var raiseRequestViewModel = new RaiseRequestViewModel
             {
@@ -190,7 +232,7 @@ namespace SCRSApplication.Controllers
                 PriorityValue = raiseRequestEntity.Priority,
                 Priority = PriorityValues.FirstOrDefault(d => d.Value == raiseRequestEntity.Priority)?.Text,
                 DueDate = raiseRequestEntity.DueDate,
-                Project = raiseRequestEntity.Project,
+                ProjectId = raiseRequestEntity.ProjectId,
                 Comments = raiseRequestEntity.Comments
             };
 
@@ -198,6 +240,13 @@ namespace SCRSApplication.Controllers
             {
                 return NotFound();
             }
+
+            string uid = userDetails.UserId;
+            var project = _context.ProjectEntity
+                                 .FirstOrDefault(p => _context.Users
+                                 .Any(u => u.Id == uid && p.UserId == u.Id));
+
+            raiseRequestViewModel.ProjectName = project?.ProjectName;
             return View(raiseRequestViewModel);
         }
 
@@ -229,8 +278,9 @@ namespace SCRSApplication.Controllers
                 PriorityValue = raiseRequestEntity.Priority,
                 Priority = PriorityValues.FirstOrDefault(d => d.Value == raiseRequestEntity.Priority)?.Text,
                 DueDate = raiseRequestEntity.DueDate,
-                Project = raiseRequestEntity.Project,
-                Comments = raiseRequestEntity.Comments
+                ProjectId = raiseRequestEntity.ProjectId,
+                Comments = raiseRequestEntity.Comments,
+                RowVersion = raiseRequestEntity.RowVersion
             };
 
 
@@ -239,20 +289,45 @@ namespace SCRSApplication.Controllers
                 return NotFound();
             }
 
+            string uid = userDetails.UserId;
+            var project = _context.ProjectEntity
+                                 .FirstOrDefault(p => _context.Users
+                                 .Any(u => u.Id == uid && p.UserId == u.Id));
+
+            raiseRequestViewModel.ProjectName = project?.ProjectName;
             return View(raiseRequestViewModel);
         }
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int? id)
+        public async Task<IActionResult> DeleteConfirmed(int id, byte[] rowVersion)
         {
-            var raiseRequestEntity = await _context.RaiseRequestEntity.FindAsync(id);
-            if(raiseRequestEntity != null)
+            try
             {
-                _context.RaiseRequestEntity.Remove(raiseRequestEntity);
+                var entity = await _context.RaiseRequestEntity
+                    .FirstOrDefaultAsync(m => m.Id == id);
+
+                if (entity == null)
+                {
+                    return NotFound(); // Entity does not exist
+                }
+
+                // Set the RowVersion property for concurrency check
+                _context.Entry(entity).Property(e => e.RowVersion).OriginalValue = rowVersion;
+
+                _context.RaiseRequestEntity.Remove(entity);
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Record deleted successfully!";
+
+                return RedirectToAction(nameof(Index)); // Redirect after successful delete
             }
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            catch (DbUpdateConcurrencyException)
+            {
+                // Handle concurrency exception (e.g., if the RowVersion has changed)
+                ModelState.AddModelError("", "The record you attempted to delete was modified by another user.");
+                TempData["ErrorMessage"] = "Record not found.";
+                return View("Index"); // Return to view with an error message
+            }
         }
     }
 }
