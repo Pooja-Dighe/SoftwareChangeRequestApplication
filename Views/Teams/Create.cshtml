@@ -1,0 +1,65 @@
+﻿@model SCRSApplication.Models.TeamsViewModel;
+
+@{
+    ViewData["Title"] = "Create";
+}
+<h2>Add Teams and Team-Members </h2>
+ 
+
+<div class="row">
+    <div class="col-md-4">
+    <div class="card">
+        <div class="card-header">
+            <h5>Create Team</h5>
+            <form asp-action="CreateTeam" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"> </div>
+                    <div class="form-floating mb-3">
+                        <input asp-for="Teams.TeamName" class="form-control" id="Name" />
+                        <label asp-for="Teams.TeamName" class="control-label">Team Name</label>
+                    <span asp-validation-for="Teams.TeamName" class="text-danger"></span>
+                </div>
+                <button type="submit" class="btn btn-primary">Save Team</button>
+            </form>
+        </div>
+        <div class="card-body">
+            <h5>Add Team-Members in Team</h5>
+                <form asp-action="CreateTeamMember">
+                    <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"> </div>
+                    <div class="form-floating mb-3">             
+                    <select id="TeamMember.TeamId" name="TeamMember.TeamId" class="form-control">
+                        <option value="">-- Select Team --</option>
+                        @foreach (var user in ViewBag.TeamList as List<SelectListItem>)
+                        {
+                            <option value="@user.Value">@user.Text</option>
+                        }
+                    </select>
+                        <label asp-for="TeamMember.TeamId" class="control-label">Team Name</label>
+                    <span asp-validation-for="TeamMember.TeamId" class="text-danger"></span>
+                </div>
+                    <div class="form-floating mb-3">     
+                    <select asp-for="TeamMember.Position" class="form-control">
+                        <option value="">-- Select Position --</option>
+                            <option value="Team Leader">Team Leader</option>
+                            <option value="Team Member">Team Member</option>
+                    </select>
+                        <label asp-for="TeamMember.Position" class="control-label">Position</label>
+                    <span asp-validation-for="TeamMember.Position" class="text-danger"></span>
+                </div>
+               <div class="form-floating mb-3">
+                    <select id="TeamMember.MemberId" name="TeamMember.MemberId" class="form-control">
+                        <option value="">-- Select Developer --</option>
+                        @foreach (var role in ViewBag.MemberList as List<SelectListItem>)
+                        {
+                            <option value="@role.Value">@role.Text</option>
+                        }
+                    </select>
+                        <label asp-for="TeamMember.MemberId" class="control-label">Team-Member</label>
+                        <span asp-validation-for="TeamMember.MemberId" class="text-danger"></span>
+                </div>
+                <button type="submit" class="btn btn-primary">Save Teams</button>
+            </form>
+        </div>
+    </div>
+    </div>
+</div>
+

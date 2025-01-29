@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.DotNet.Scaffolding.Shared.CodeModifier.CodeChange;
 using Microsoft.EntityFrameworkCore;
 using SCRSApplication.Data;
 using SCRSApplication.Models;
@@ -15,7 +16,7 @@ namespace SCRSApplication.Controllers
         private readonly UserManager<IdentityUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
 
-        public RaiseRequestController(ApplicationDBContext context, UserManager<IdentityUser> userManager,RoleManager<IdentityRole> roleManager) : base(userManager, roleManager)
+        public RaiseRequestController(ApplicationDBContext context, UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager) : base(userManager, roleManager)
         {
             _context = context;
             _userManager = userManager;
@@ -32,25 +33,44 @@ namespace SCRSApplication.Controllers
             ViewBag.UserName = userDetails.UserName;
             ViewBag.RoleId = userDetails.RoleId;
             ViewBag.RoleName = userDetails.RoleName;
-            var userId = userDetails.UserId;
 
-            var entities = await _context.RaiseRequestEntity
-                          .Where(e => e.UserId == userId)                         
-                          .Include(e => e.Project)
-                          .ToListAsync();
-          
+            List<RaiseRequestEntity> entityList = null;
+
+            if (User.IsInRole("User"))
+            {
+                var userId = userDetails.UserId;
+
+                entityList = await _context.RaiseRequestEntity
+                             .Where(e => e.UserId == userId)
+                             .Include(e => e.Project)
+                             .ToListAsync();
+                
+            }
+            else if (User.IsInRole("Manager"))
+            {
+                entityList = await _context.RaiseRequestEntity
+                                          .Include(r => r.Role)
+                                          .Include(r => r.User)
+                                          .Include(r => r.Project)
+                                          .ToListAsync();
+            }
+            else
+            {
+                return Forbid(); // Access denied
+            }
+
             var PriorityValues = GetPriorityDropdownValues();
-       
-            var viewModel = entities.Select(e => new RaiseRequestViewModel
+
+            var viewModel = entityList.Select(e => new RaiseRequestViewModel
             {
                 Id = e.Id,
                 Title = e.Title,
                 Description = e.Description,
-                DueDate = e.DueDate,             
+                DueDate = e.DueDate,
                 Priority = PriorityValues.FirstOrDefault(d => d.Value == e.Priority)?.Text,
-                ProjectName = e.Project.ProjectName, // Assuming MyProjectEntity has Name
+                ProjectName = e.Project.ProjectName, 
+                RequestStatus = e.RequestStatus
             }).ToList();
-
             return View(viewModel);
         }
 
@@ -78,9 +98,9 @@ namespace SCRSApplication.Controllers
         // GET: RaiseRequest/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task <IActionResult> Create(RaiseRequestViewModel userViewModel)
+        public async Task<IActionResult> Create(RaiseRequestViewModel userViewModel)
         {
-           
+
             if (ModelState.IsValid)
             {
                 var PriorityValues = GetPriorityDropdownValues();
@@ -94,12 +114,13 @@ namespace SCRSApplication.Controllers
                     RoleId = userViewModel.RoleId,
                     UserId = userViewModel.UserId,
                     AddedAt = DateTime.Now,
+                    RequestStatus = "Pending"
                 };
 
-                  _context.RaiseRequestEntity.Add(raiseRequestEntity);
-                  _context.SaveChanges();
-                  TempData["SuccessMessage"] = "Record saved successfully!";
-                  return RedirectToAction(nameof(Index));
+                _context.RaiseRequestEntity.Add(raiseRequestEntity);
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Record saved successfully!";
+                return RedirectToAction(nameof(Index));
             }
             else
             {
@@ -112,18 +133,27 @@ namespace SCRSApplication.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
+            ProjectEntity project = null;
             var userDetails = await GetUserDetailsAsync();
 
             ViewBag.UserId = userDetails.UserId;
             ViewBag.UserName = userDetails.UserName;
             ViewBag.RoleId = userDetails.RoleId;
             ViewBag.RoleName = userDetails.RoleName;
-
-            string uid = userDetails.UserId;
-            var project = _context.ProjectEntity
-                                 .FirstOrDefault(p => _context.Users
+            if (User.IsInRole("User"))
+            {
+                string uid = userDetails.UserId;
+                project = _context.ProjectEntity
+                                    .FirstOrDefault(p => _context.Users
                                  .Any(u => u.Id == uid && p.UserId == u.Id));
 
+            }
+            else if (User.IsInRole("Manager"))
+            {
+                project = _context.ProjectEntity
+                              .FirstOrDefault(p => _context.RaiseRequestEntity
+                              .Any(r => r.Id == id && p.Id == r.ProjectId && p.UserId == r.UserId));
+            }
             ViewBag.ProjectName = project?.ProjectName ?? "No Project Found";
             ViewBag.ProjectId = project?.Id;
 
@@ -132,8 +162,8 @@ namespace SCRSApplication.Controllers
             {
                 return NotFound();
             }
-          
-            var  userViewModel = new RaiseRequestViewModel
+
+            var userViewModel = new RaiseRequestViewModel
             {
                 Id = raiseRequestEntity.Id,
                 Title = raiseRequestEntity.Title,
@@ -142,7 +172,7 @@ namespace SCRSApplication.Controllers
                 DueDate = raiseRequestEntity.DueDate,
                 ProjectId = raiseRequestEntity.ProjectId,
                 RoleId = raiseRequestEntity.RoleId,
-                UserId = raiseRequestEntity.UserId,               
+                UserId = raiseRequestEntity.UserId,
                 RowVersion = raiseRequestEntity.RowVersion
             };
 
@@ -153,13 +183,14 @@ namespace SCRSApplication.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, RaiseRequestViewModel userViewModel) 
+        public async Task<IActionResult> Edit(int id, RaiseRequestViewModel userViewModel)
         {
-            if(id != userViewModel.Id)
+            if (id != userViewModel.Id)
             {
                 return NotFound();
             }
-            if (ModelState.IsValid) 
+
+            if (ModelState.IsValid)
             {
                 try
                 {
@@ -173,7 +204,7 @@ namespace SCRSApplication.Controllers
                         ProjectId = userViewModel.ProjectId,
                         RoleId = userViewModel.RoleId,
                         UserId = userViewModel.UserId,
-                        //RowVersion = userViewModel.RowVersion,
+                        //  RequestStatus = "Pending",
                         UpdatedAt = DateTime.Now
                     };
 
@@ -184,7 +215,7 @@ namespace SCRSApplication.Controllers
                     ViewBag.PriorityList = GetPriorityDropdownValues();
                     return RedirectToAction(nameof(Index));
                 }
-                catch(DbUpdateConcurrencyException) 
+                catch (DbUpdateConcurrencyException)
                 {
                     if (!_context.RaiseRequestEntity.Any(p => p.Id == id))
                     {
@@ -194,7 +225,7 @@ namespace SCRSApplication.Controllers
                     TempData["ErrorMessage"] = "An error occurred while updating the record.";
 
                     ModelState.AddModelError("", "Concurrency conflict occurred.");
-                   
+
                     throw; // Re-throw the exception if it's not concurrency related
 
                 }
@@ -203,7 +234,7 @@ namespace SCRSApplication.Controllers
             return View(userViewModel);
         }
 
-        public async Task<IActionResult>Details(int? id)
+        public async Task<IActionResult> Details(int? id)
         {
             var userDetails = await GetUserDetailsAsync();
 
@@ -217,9 +248,9 @@ namespace SCRSApplication.Controllers
             }
 
             var raiseRequestEntity = await _context.RaiseRequestEntity
-                .Include(r => r.Role)
-                .Include(r => r.User)    
-                .FirstOrDefaultAsync(m => m.Id == id);
+            .Include(r => r.Role)
+            .Include(r => r.User)
+            .FirstOrDefaultAsync(m => m.Id == id);
 
             var PriorityValues = GetPriorityDropdownValues();
             ViewBag.Priorities = GetPriorityDropdownValues();
@@ -241,10 +272,25 @@ namespace SCRSApplication.Controllers
                 return NotFound();
             }
 
-            string uid = userDetails.UserId;
-            var project = _context.ProjectEntity
-                                 .FirstOrDefault(p => _context.Users
-                                 .Any(u => u.Id == uid && p.UserId == u.Id));
+            ProjectEntity project = null;
+            if (User.IsInRole("User"))
+            {
+                string uid = userDetails.UserId;
+                project = _context.ProjectEntity
+                                .FirstOrDefault(p => _context.Users
+                                .Any(u => u.Id == uid && p.UserId == u.Id));
+            }
+            else if (User.IsInRole("Manager"))
+            {
+                project = _context.ProjectEntity
+                              .FirstOrDefault(p => _context.RaiseRequestEntity
+                              .Any(e => e.UserId == p.UserId && p.Id == e.ProjectId && e.Id == id));
+            }
+            else
+            {
+                return Forbid(); // Access denied
+            }
+
 
             raiseRequestViewModel.ProjectName = project?.ProjectName;
             return View(raiseRequestViewModel);
@@ -285,7 +331,7 @@ namespace SCRSApplication.Controllers
 
 
             if (raiseRequestViewModel == null)
-            { 
+            {
                 return NotFound();
             }
 
@@ -329,5 +375,25 @@ namespace SCRSApplication.Controllers
                 return View("Index"); // Return to view with an error message
             }
         }
-    }
+
+
+        [HttpPost, ActionName("SaveRequestStatus")]
+        public IActionResult SaveRequestStatus(string status, int id,string comments)
+        {
+            if (string.IsNullOrWhiteSpace(comments))
+            {
+                return BadRequest(new { success = false, message = "Comments are mandatory!" });
+            }
+            var entity = _context.RaiseRequestEntity.FirstOrDefault(m => m.Id == id);
+            if (entity != null)
+            {
+                entity.Comments = comments;
+                entity.RequestStatus = status;
+                entity.UpdatedAt = DateTime.Now;
+                _context.SaveChanges();
+                return Ok(new { success = true, message = $"The Request has been {status}." });
+            }
+            return BadRequest(new { success = false, message = "Error updating status." });
+        }
+    }    
 }

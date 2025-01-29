@@ -177,10 +177,12 @@ namespace SCRSApplication.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("ProviderKey")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
@@ -217,10 +219,12 @@ namespace SCRSApplication.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
@@ -241,10 +245,18 @@ namespace SCRSApplication.Migrations
                     b.Property<string>("ProjectName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("TeamId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TeamsId")
+                        .HasColumnType("int");
+
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("TeamsId");
 
                     b.HasIndex("UserId");
 
@@ -289,6 +301,9 @@ namespace SCRSApplication.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
 
+                    b.Property<int?>("TeamMemberId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
@@ -307,9 +322,37 @@ namespace SCRSApplication.Migrations
 
                     b.HasIndex("RoleId");
 
+                    b.HasIndex("TeamMemberId");
+
                     b.HasIndex("UserId");
 
                     b.ToTable("RaiseRequestEntity", "Identity");
+                });
+
+            modelBuilder.Entity("SCRSApplication.Models.TeamMemberEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("MemberId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Position")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("TeamId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MemberId");
+
+                    b.HasIndex("TeamId");
+
+                    b.ToTable("TeamMemberEntity", "Identity");
                 });
 
             modelBuilder.Entity("SCRSApplication.Models.TeamsEntity", b =>
@@ -320,17 +363,10 @@ namespace SCRSApplication.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("ProjectId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<string>("TeamName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ProjectId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("TeamEntity", "Identity");
                 });
@@ -401,9 +437,17 @@ namespace SCRSApplication.Migrations
 
             modelBuilder.Entity("SCRSApplication.Models.ProjectEntity", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                    b.HasOne("SCRSApplication.Models.TeamsEntity", "Teams")
+                        .WithMany()
+                        .HasForeignKey("TeamsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SCRSApplication.Models.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
+
+                    b.Navigation("Teams");
 
                     b.Navigation("User");
                 });
@@ -420,6 +464,10 @@ namespace SCRSApplication.Migrations
                         .WithMany()
                         .HasForeignKey("RoleId");
 
+                    b.HasOne("SCRSApplication.Models.TeamMemberEntity", "TeamMember")
+                        .WithMany()
+                        .HasForeignKey("TeamMemberId");
+
                     b.HasOne("SCRSApplication.Models.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
@@ -428,20 +476,24 @@ namespace SCRSApplication.Migrations
 
                     b.Navigation("Role");
 
+                    b.Navigation("TeamMember");
+
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("SCRSApplication.Models.TeamsEntity", b =>
+            modelBuilder.Entity("SCRSApplication.Models.TeamMemberEntity", b =>
                 {
-                    b.HasOne("SCRSApplication.Models.ProjectEntity", "Project")
-                        .WithMany()
-                        .HasForeignKey("ProjectId");
-
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
                         .WithMany()
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("MemberId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
-                    b.Navigation("Project");
+                    b.HasOne("SCRSApplication.Models.TeamsEntity", "Team")
+                        .WithMany()
+                        .HasForeignKey("TeamId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Team");
 
                     b.Navigation("User");
                 });

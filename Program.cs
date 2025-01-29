@@ -4,19 +4,19 @@ using Microsoft.AspNetCore.Identity;
 using SCRSApplication.Services;
 using Microsoft.AspNetCore.Identity.UI.Services;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<ApplicationDBContext>(Options => Options.UseSqlServer(builder.Configuration.GetConnectionString("DBConnection")));
 
-//builder.Services.AddDefaultIdentity<IdentityUser>().AddDefaultTokenProviders().AddRoles<IdentityRole>().
-//    AddEntityFrameworkStores<ApplicationDBContext>();
+builder.Services.AddDefaultIdentity<IdentityUser>().AddDefaultTokenProviders().AddRoles<IdentityRole>().
+    AddEntityFrameworkStores<ApplicationDBContext>();
 
-builder.Services.AddIdentity<IdentityUser, IdentityRole>()
-    .AddEntityFrameworkStores<ApplicationDBContext>()
-    .AddDefaultTokenProviders();
+//builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+//    .AddEntityFrameworkStores<ApplicationDBContext>()
+//    .AddDefaultTokenProviders();
 
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 builder.Services.AddControllersWithViews(); // For MVC

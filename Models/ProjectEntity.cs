@@ -9,7 +9,9 @@ namespace SCRSApplication.Models
         public int Id { get; set; }
         public string? ProjectName { get; set; }
         public string? UserId { get; set; }
-        public IdentityUser User { get; set; }
+        public ApplicationUser User { get; set; }
+        public int TeamId { get; set; }
+        public TeamsEntity Teams { get; set; }
        
 
     }

@@ -7,6 +7,7 @@
     var roleId = ViewBag.RoleId;
     var userId = ViewBag.UserId;
     var user = ViewBag.UserName;
+    var status = Model.RequestStatus;
 }
 
 
@@ -85,7 +86,7 @@
         <div class="col-md-4">
             <form asp-action="Edit" method="post">
                 <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-                <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="Id" id="Id" />
                 <div class="form-floating mb-3">
                     <input asp-for="Title" autocomplete="off" class="form-control" readonly />
                     <label asp-for="Title" class="form-label">Title</label>
@@ -97,10 +98,11 @@
                     <span asp-validation-for="Description" class="text-danger"></span>
                 </div>
                 <div class="form-floating mb-3">
-                    <select id="dropdown" name="Priority" value="PriorityValue" asp-for="Priority" asp-items="@ViewBag.PriorityList" class="form-control" readonly autocomplete="off">
-                          <option value="">-- Select Priority --</option>
-                    </select>
-                    <span asp-validation-for="Priority" class="text-danger"></span>
+                    <label asp-for="PriorityValue" style="padding-top: 5px" class="form-label">Priority</label>
+                    <select id="dropdown" name="PriorityValue" style="padding-bottom: 5px" asp-for="PriorityValue" asp-items="Model.PriorityList" class="form-control" readonly autocomplete="off">
+                        <option value="">-- Select Priority --</option>
+                    </select>                                          @*  asp-items="ViewBag.PriorityList" *@
+                    <span asp-validation-for="PriorityValue" class="text-danger"></span>
                 </div>
                 <div class="form-floating mb-3">
                     <input asp-for="DueDate" autocomplete="off" class="form-control" readonly type="date" />
@@ -122,22 +124,90 @@
                 </div>
 
                 <div class="form-floating mb-3">
-                    <input type="hidden" asp-for="UserId" class="form-control" name="UserId" style="display: none;" value="@userId" readonly />
-                    <label asp-for="UserId" class="form-label" style="display: none;">UserId</label>
-                    <span asp-validation-for="UserId" type="hidden" class="text-danger"></span>
+                    <Input asp-for="Comments" id="comments" name="comments" autocomplete="off" class="form-control" />
+                    <label asp-for="Comments" class="form-label">Comments</label>
+                    <span asp-validation-for="Comments" class="text-danger"></span>
                 </div>
-                <input type="hidden" asp-for="Id" />
+             @*    <input type="hidden" asp-for="Id" /> *@
                 <input type="hidden" asp-for="RowVersion" /> <!-- Hidden field for RowVersion -->
-                <div class="form-floating mb-3">
-                    <input type="hidden" asp-for="RoleId" class="form-control" name="RoleId" value="@roleId" readonly />
-                    <label asp-for="RoleId" class="form-label" style="display: none;">RoleId</label>
-                    <span asp-validation-for="RoleId" type="hidden" class="text-danger"></span>
-                </div>
+                  <div id="statusMessage" style="display:none; color: green; font-weight: bold;"></div>
+
+          
                 <br />
-                <button type="submit" class="w-100 btn btn-lg btn-primary">Modify Request</button>
+             @*    <button type="submit" class="w-100 btn btn-lg btn-primary">Modify Request</button> *@
+              <div class="row">
+                 <div class="col-md-4">
+                      @*   <div asp-action="Edit" method="post"> 
+                             <input type="submit" name="RequestStatus" value="Approved" /> *@
+                        <button type="button" class="w-20 btn btn-lg btn btn-success" id="approvedBtn" onclick="SaveRequestStatus('Approved')"
+                        @if(status == "Approved")
+                        {
+                          <text>disabled</text>
+                        }
+                        > Approve
+                        </button>
+                        @*   </div> *@
+                 </div>
+            
+                      <div class="col-md-4">
+                        <button type="button" class="w-20 btn btn-lg btn btn-danger" id="rejectBtn" onclick="SaveRequestStatus('Rejected')"
+                        @if (status == "Rejected")
+                        {
+                            <text>disabled</text>
+                        }
+                        
+                        >Reject</button>
+                    </div>
+                     <div class="col-md-4">
+                    <button type="submit" asp-action="Index" class="w-20 btn btn-lg btn-outline-secondary">Back</button>
+            </div>
+                </div>
+                
             </form>
         </div>
     </div>
+
+    <script>
+        function SaveRequestStatus(status){
+            debugger;
+            var id = $('#Id').val();
+            var comments = $('#comments').val();
+            console.log("Data Sent -> ID:", id, "Status:", status, "Comments:", comments); // Debugging log
+
+            $.ajax({
+                url : '/RaiseRequest/SaveRequestStatus',
+                type : "POST",
+                contentType: "application/x-www-form-urlencoded",
+                dataType: 'json',
+                data : {
+                    id : id,
+                    status : status,
+                    comments : comments
+                },
+                 success: function (response) {
+                  if (response.success) {
+                    // Show success message
+                    $('#statusMessage').text(response.message).show();
+                    
+                    // Disable buttons based on the clicked one
+                    if (status === 'Approved') {
+                        $('#approveBtn').prop('disabled', true);
+                        $('#rejectBtn').prop('disabled', false);
+                    } else {
+                        $('#rejectBtn').prop('disabled', true);
+                        $('#approveBtn').prop('disabled', false);
+                    }
+                } else {
+                    $('#statusMessage').text(response.message).css('color', 'red').show();
+                }
+            },
+            error: function (xhr, status, error) {
+                $('#statusMessage').text("Error occurred: " + xhr.responseText).css('color', 'red').show();
+            }
+
+            });
+        }
+    </script>
 }
 
 

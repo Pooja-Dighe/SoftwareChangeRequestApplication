@@ -50,6 +50,18 @@ namespace SCRSApplication.Data
                     .HasColumnType("rowversion")
                     .ValueGeneratedOnAddOrUpdate()
                     .IsConcurrencyToken();
+
+             builder.Entity<TeamMemberEntity>()
+            .HasOne(e => e.User) // Navigation property
+            .WithMany()
+            .HasForeignKey(e => e.MemberId) // Set MemberId as FK
+            .OnDelete(DeleteBehavior.Cascade); // Optional: Define delete behavior
+
+            builder.Entity<TeamMemberEntity>()
+          .HasOne(e => e.Team) // Navigation property
+          .WithMany()
+          .HasForeignKey(e => e.TeamId) // Set MemberId as FK
+          .OnDelete(DeleteBehavior.Cascade); // Optional: Define delete behavior
         }
 
 
@@ -59,5 +71,6 @@ namespace SCRSApplication.Data
 
         public DbSet<ProjectEntity> ProjectEntity { get; set; }
         public DbSet<TeamsEntity> TeamEntity { get; set; }
+        public DbSet<TeamMemberEntity> TeamMemberEntity {  get; set; }
     }
 }

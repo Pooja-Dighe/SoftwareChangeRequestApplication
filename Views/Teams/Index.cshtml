@@ -1,0 +1,58 @@
+﻿@model SCRSApplication.Models.TeamsViewModel
+ 
+
+<h2>Teams and its Members List</h2>
+<p>
+    <a asp-action="Create">Create New Team</a>
+
+</p>
+<div class="card">
+    <div class="card-body">
+        <h3>Teams</h3>
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>Id</th>
+                <th>Team Name</th>
+            </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.TeamEntityList)
+                {
+                    <tr>
+                        <td>@item.Id</td>
+                        <td>@item.TeamName</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="card-body">
+        <h3>Team-Members</h3>
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                    <th>TeamId</th>
+                    <th>Team</th>
+                    <th>Position</th>
+                    <th>MemberId</th>
+             @*    <th>TeamId</th>
+                <th>Team Name</th>
+                <th>Position</th>
+                <th>Employee Name</th> *@
+            </tr>
+            </thead>
+            <tbody>
+                 @foreach (var item in Model.TeamMemberEntityList)
+                {
+                  <tr>
+                        <td>@item.TeamId</td>
+                        <td>@item.Team</td>
+                        <td>@item.Position</td>
+                        <td>@item.MemberId</td>
+                  </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

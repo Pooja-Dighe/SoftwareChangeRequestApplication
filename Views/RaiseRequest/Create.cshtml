@@ -32,6 +32,7 @@
                     <select id="dropdown" name="PriorityValue" asp-for="Priority" asp-items="@ViewBag.PriorityList" class="form-control" autocomplete="off">
                         <option value="PriorityValue">-- Select Priority --</option>
                     </select>
+                     <label asp-for="Priority" class="form-label">Priority</label>
                     <span asp-validation-for="Priority" class="text-danger"></span>
                 </div>
         

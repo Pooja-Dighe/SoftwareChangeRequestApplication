@@ -1,7 +1,7 @@
 ﻿@model SCRSApplication.Models.RaiseRequestViewModel
 
 @{
-   
+
     ViewData["Title"] = "Details";
     var roles = ViewBag.RoleName;
     var roleId = ViewBag.RoleId;
@@ -88,16 +88,29 @@
         <div class="row">
             <div class="col-md-1">
                 <input type="hidden" name="id" value="@Model?.Id" />
-                <button type="submit" asp-action="Edit" class="btn btn-primary">Edit</button>
+                    <button type="submit" asp-action="Edit" class="btn btn-primary" id="disabled-btn" value="">Edit</button>
                 </div>
             <div class="col-md-1">
                 <input type="hidden" name="id" />
-                    <button type="submit" asp-action="Index" class="btn btn-outline-secondary">Back</button>
+                    <button type="submit" asp-action="Index" id="isDisable" class="btn btn-outline-secondary">Back</button>
             </div>
         </div>
       </form>
      
  </div>
+
+
+    <script>
+        // Assuming Model.Status is passed to the view
+        var status = '@Model.RequestStatus'; // get the value of Model.Status from the Razor view
+
+        // Condition for disabling the button
+        var isDisabled = (status === "Pending" || status.trim() === "") ? "disabled" : "";
+
+        // Set the button's disabled attribute
+        document.getElementById("isDisable").setAttribute("disabled", isDisabled);
+    </script>
+
 
 }
 
@@ -178,18 +191,22 @@
             <br />
             <form method="get">
                 <div class="row">
-                    <div class="col-md-1">
+                    <div class="col-md-4">
                         <input type="hidden" name="id" value="@Model?.Id" />
-                        <button type="submit" asp-action="Edit" class="btn btn-primary">Edit</button>
+                    <button type="submit" asp-action="Edit" class="w-100 btn btn-lg btn-primary">Change Request Status</button>
                     </div>
-                    <div class="col-md-1">
+                </div>
+                <br />
+            <div class="row">
+                    <div class="col-md-4">
                         <input type="hidden" name="id" />
-                    <button type="submit" asp-action="Index" class="btn btn-outline-secondary">Back</button>
-                    </div>
+                    <button type="submit" asp-action="Index" class="w-100 btn-lg btn-outline-secondary">Back</button>
+                   </div>
                 </div>
             </form>
 
         </div>
+
 }
 
 @if (roles.Contains("Developer"))

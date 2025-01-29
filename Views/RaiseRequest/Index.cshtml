@@ -11,7 +11,7 @@
 
 }
 
-@if (roles.Contains("User"))
+@if (User.IsInRole("User"))
 {
 
     @if (TempData["SuccessMessage"] != null)
@@ -55,10 +55,10 @@
             <th>
                 @Html.DisplayNameFor(model => model.ProjectName)
             </th>
-          @*   <th>
+            <th>
                 @Html.DisplayNameFor(model => model.RequestStatus)
             </th>
-            <th>
+                @*   <th>
                 @Html.DisplayNameFor(model => model.WorkStatus)
             </th>
             <th>
@@ -92,10 +92,10 @@
             <td>
                 @Html.DisplayFor(modelItem => item.ProjectName)
             </td>
-           @*  <td>
+            <td>
                 @Html.DisplayFor(modelItem => item.RequestStatus)
             </td>
-            <td>
+                    @*     <td>
                 @Html.DisplayFor(modelItem => item.WorkStatus)
             </td>
             <td>
@@ -108,9 +108,12 @@
                 @Html.DisplayFor(modelItem => item.Comments)
             </td> *@
             <td>
-                    <form asp-action="Edit" method="get">
+                    <form asp-action="Edit" method="get" >
                         <input type="hidden" name="id" value="@item.Id" />
-                        <button type="submit" class="btn btn-primary">Edit</button>
+                        <button type="submit" class="btn btn-primary"
+                            @(item.RequestStatus == "Pending" || string.IsNullOrWhiteSpace(item.RequestStatus) ? "" : "disabled")>
+                                Edit
+                            </button>
                     </form>
              </td>
              <td>
@@ -122,7 +125,10 @@
              <td>
                     <form asp-action="Delete" method="get">
                         <input type="hidden" name="id" value="@item.Id" />
-                        <button type="submit" class="btn btn-danger">Delete</button>
+                        <button type="submit" class="btn btn-danger"
+                            @(item.RequestStatus == "Pending" || string.IsNullOrWhiteSpace(item.RequestStatus) ? "" : "disabled")>
+                                Delete
+                            </button>
                     </form>
                   @*   <button type="submit" class="btn btn-danger"  asp-action="Delete" asp-route-id="@item.Id">Delete</button> *@
              </td>
@@ -135,7 +141,8 @@
 
 }
 
-@if (roles.Contains("Manager"))
+
+@if (User.IsInRole("Manager"))
 {
 
     <h1>Users Raised Request List</h1>
@@ -150,9 +157,105 @@
                 <th>
                     @Html.DisplayNameFor(model => model.Description)
                 </th>
-                @* <th>
+                <th>
                     @Html.DisplayNameFor(model => model.Priority)
-                </th> *@
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DueDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ProjectName)
+                </th>
+                <th>
+                   @Html.DisplayNameFor(model => model.RequestStatus)
+                </th>
+                @*   <th>
+            @Html.DisplayNameFor(model => model.WorkStatus)
+            </th>
+            <th>
+            @Html.DisplayNameFor(model => model.User)
+            </th>
+            <th>
+            @Html.DisplayNameFor(model => model.Role)
+            </th>
+            <th>
+            @Html.DisplayNameFor(model => model.Comments)
+            </th> *@
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Title)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Description)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Priority)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DueDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ProjectName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.RequestStatus)
+                     </td>
+                    @*  <td
+            @Html.DisplayFor(modelItem => item.WorkStatus)
+            </td>
+            <td>
+            @Html.DisplayFor(modelItem => item.User.Id)
+            </td>
+            <td>
+            @Html.DisplayFor(modelItem => item.Role.Id)
+            </td>
+            <td>
+            @Html.DisplayFor(modelItem => item.Comments)
+            </td> *@
+                    @* <td>
+            <form asp-action="Edit" method="get">
+            <input type="hidden" name="id" value="@item.Id" />
+            <button type="submit" class="btn btn-primary">Edit</button>
+            </form>
+            </td> *@
+                    <td>
+                        <form asp-action="Details" method="get">
+                            <input type="hidden" name="id" value="@item.Id" />
+                            <button type="submit" class="btn btn-info">View</button>
+                        </form>
+                    </td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+
+}
+
+
+@if (User.IsInRole("Developer"))
+{
+    <h1>Users Raised Request List</h1>
+
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Title)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Description)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Priority)
+                </th>
                 <th>
                     @Html.DisplayNameFor(model => model.DueDate)
                 </th>
@@ -187,19 +290,19 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.Description)
                     </td>
-                   @*  <td>
+                    <td>
                         @Html.DisplayFor(modelItem => item.Priority)
-                    </td> *@
+                    </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.DueDate)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.ProjectName)
                     </td>
-                    @*  <td>
-            @Html.DisplayFor(modelItem => item.RequestStatus)
-            </td>
-            <td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.RequestStatus)
+                    </td>
+                    @*   <td>
             @Html.DisplayFor(modelItem => item.WorkStatus)
             </td>
             <td>
@@ -212,26 +315,20 @@
             @Html.DisplayFor(modelItem => item.Comments)
             </td> *@
                     @* <td>
-                        <form asp-action="Edit" method="get">
-                            <input type="hidden" name="id" value="@item.Id" />
-                            <button type="submit" class="btn btn-primary">Edit</button>
-                        </form>
-                    </td> *@
+            <form asp-action="Edit" method="get">
+            <input type="hidden" name="id" value="@item.Id" />
+            <button type="submit" class="btn btn-primary">Edit</button>
+            </form>
+            </td> *@
                     <td>
                         <form asp-action="Details" method="get">
                             <input type="hidden" name="id" value="@item.Id" />
                             <button type="submit" class="btn btn-info">View</button>
                         </form>
                     </td>
-           
+
                 </tr>
             }
         </tbody>
-    </table>
-
-}
-
-
-@if (roles.Contains("Developer"))
-{
+    </table>    
 }

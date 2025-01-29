@@ -26,7 +26,8 @@ namespace SCRSApplication.Models
         public byte[] RowVersion { get; set; }       // Maps to SQL timestamp/rowversion
         public string? Comments { get; set; }  
 
-        
+        public int? TeamMemberId { get; set; }
+        public TeamMemberEntity TeamMember { get; set; }
        // public int? TimelineId { get; set; }           // working time for developers      
     }
 }

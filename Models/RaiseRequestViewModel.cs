@@ -40,6 +40,8 @@ namespace SCRSApplication.Models
         [Display(Name = "RoleId")]
         public string? RoleId { get; set; }
 
+        public string? RequestStatus { get; set; }
+
         public string? Comments { get; set; }
         public DateTime AddedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
