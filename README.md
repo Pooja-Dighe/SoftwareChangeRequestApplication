@@ -1,6 +1,7 @@
 SCRSApplication initialize to git 
 # SoftwareChangeRequestApplication
 Project Overview 
+
 Develop a Software Change Request (SCR) System where any user assigned to a project can 
 raise a change request. The request will follow a predefined workflow: it must be approved 
 by a manager, assigned to a developer team, and reviewed by both the manager and the 
